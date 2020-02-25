@@ -14,8 +14,8 @@ require('dotenv').config()
 
   var app = firebase.initializeApp(config);
   var auth = app.auth()
-  var db = app.database();
-  var serverValue = firebase.database.ServerValue;
+  var db = app.firestore();
+  var fieldValue = firebase.firestore.FieldValue;
 //  const messages = () => db.ref('messages');
 //  const comments = (uid) => db.ref(`messages/${uid}/comments`);
 //  const sensorData = (uid, commentID) => db.ref(`messages/${uid}/comments/${commentID}`)
@@ -26,10 +26,10 @@ require('dotenv').config()
 
 //  const sensors = uid => db.ref(`users/${uid}/sensors`);
 
-  const sensor = (uid, sensorID) => db.ref(`users/${uid}/sensors/${sensorID}`);
+  const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
 //  const actuators = uid => db.ref(`users/${uid}/actuators`);
 
-  const actuator = (uid, sensorID) => db.ref(`users/${uid}/actuators/${sensorID}`);
+  const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
   let counter = 0;
   let alarmCounter = 0;
   const frame_obj = {
@@ -58,18 +58,18 @@ require('dotenv').config()
         //     console.log("SNAPSHOT", snapshot.val())
         // })
 
-        actuator(authUser.uid, process.env.NODE_APP_LAMP1ID).on('value',snapshot => {
-            console.log("SNAPSHOT: ",snapshot.val())
-            if (snapshot.val().state === 1){
-                console.log("SENDING 1");
-                frame_obj.data="1";
-                xbee_api.xbeeModule.builder.write(frame_obj);
-            }
-            if (snapshot.val().state === 0){
-                console.log("SENDING 0");
-                frame_obj.data="0";
-                xbee_api.xbeeModule.builder.write(frame_obj);
-            }
+        actuator(authUser.uid, process.env.NODE_APP_LAMP1ID).onSnapshot(snapshot => {
+            console.log("SNAPSHOT: ",snapshot.data())
+            // if (snapshot.data().state === 1){
+            //     console.log("SENDING 1");
+            //     frame_obj.data="1";
+            //     xbee_api.xbeeModule.builder.write(frame_obj);
+            // }
+            // if (snapshot.data().state === 0){
+            //     console.log("SENDING 0");
+            //     frame_obj.data="0";
+            //     xbee_api.xbeeModule.builder.write(frame_obj);
+            // }
         })
 
         xbee_api.xbeeModule.parser.on("data", function(frame) {
