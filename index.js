@@ -85,12 +85,12 @@ require('dotenv').config()
                   //  console.log("COUNTER: ", counter);
                       sensor(authUser.uid, process.env.NODE_APP_TERMOMETERID)
                      .update({data: temp,
-                            readingDate: serverValue.TIMESTAMP
+                            readingDate: fieldValue.serverTimestamp()
                             });
 			sensor(authUser.uid, process.env.NODE_APP_BAROMETERID)
 			.update({
 				data: press,
-				readingDate: serverValue.TIMESTAMP
+				readingDate: fieldValue.serverTimestamp()
 			});
 			
                     // comments("-LwnsU_BjlGG5_1tQ_VT").push({
