@@ -132,7 +132,8 @@ dist/
 
 # DynamoDB Local files
 .dynamodb/
-
+# temporary files
+index3.js
 # Temporary folders
 tmp/
 temp/
