@@ -106,6 +106,39 @@ const xbee_api = require('./xbee');
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
             console.log("Trigered !!!")
+            myCamera
+              .snap()
+              .then(result => {
+                console.log("Success !!!!");
+                s3.putObject({
+                  Bucket: BUCKET,
+                  Body: fs.readFileSync(localImage),
+                  Key: imageRemoteName
+                })
+                  .promise()
+                  .then(response => {
+                    console.log(`done! - `, response);
+                    // console.log(
+                    //   `The URL is ${s3.getSignedUrl("getObject", {
+                    //     Bucket: BUCKET,
+                    //     Key: imageRemoteName
+                    //   })}`
+                    // );
+                    sensor(authUser.uid, process.env.CAMERA_ID)
+                    .update({ data: s3.getSignedUrl("getObject", {
+                      Bucket: BUCKET,
+                      Key: imageRemoteName
+                    }) });
+                    
+
+                  })
+                  .catch(err => {
+                    console.log("failed:", err);
+                  });
+              })
+              .catch(error => {
+                console.log("ERROR", error);
+              });
             sensor(authUser.uid, process.env.CAMERA_ID)
             .update({ cameraTrigger: false });
 
