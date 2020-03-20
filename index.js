@@ -106,6 +106,9 @@ const xbee_api = require('./xbee');
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
             console.log("Trigered !!!")
+            sensor(authUser.uid, process.env.CAMERA_ID)
+            .update({ cameraTrigger: false });
+
           }
         })
 
