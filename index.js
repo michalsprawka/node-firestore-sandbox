@@ -1,7 +1,20 @@
+
+
+require('dotenv').config()
+// Photo module --------------
+const PiCamera = require("pi-camera");
+var AWS = require("aws-sdk");
+const fs = require("fs");
+const BUCKET = "cimarosa01";
+const REGION = "eu-central-1";
+const ACCESS_KEY = process.env.AA_KEY;
+const SECRET_KEY = process.env.ASA_KEY;
+//--------------
+
 var firebase = require('firebase');
 const xbee_api = require('./xbee');
 
-require('dotenv').config()
+//require('dotenv').config()
 
   const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -11,6 +24,25 @@ require('dotenv').config()
     storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   };
+
+  //Photo module ------------
+  const localImage = "./test.jpg";
+  const imageRemoteName = `RpiImage.jpg`;
+  AWS.config.update({
+    accessKeyId: ACCESS_KEY,
+    secretAccessKey: SECRET_KEY,
+    region: REGION
+  });
+  var s3 = new AWS.S3();
+
+  const myCamera = new PiCamera({
+    mode: "photo",
+    output: `${__dirname}/test.jpg`,
+    width: 640,
+    height: 480,
+    nopreview: true
+  });
+  //--------------------------
 
   var app = firebase.initializeApp(config);
   var auth = app.auth()
@@ -70,6 +102,11 @@ require('dotenv').config()
             //     frame_obj.data="0";
             //     xbee_api.xbeeModule.builder.write(frame_obj);
             // }
+        })
+        sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
+          if (snapshot.data().cameraTrigger){
+            console.log("Trigered !!!")
+          }
         })
 
         xbee_api.xbeeModule.parser.on("data", function(frame) {
