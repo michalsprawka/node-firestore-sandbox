@@ -129,7 +129,8 @@ const xbee_api = require('./xbee');
                       readingDate: fieldValue.serverTimestamp(),
                       data: s3.getSignedUrl("getObject", {
                       Bucket: BUCKET,
-                      Key: imageRemoteName
+                      Key: imageRemoteName,
+                      Expires: 3600
                         }) 
                       });
                   })
