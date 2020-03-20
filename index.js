@@ -125,12 +125,13 @@ const xbee_api = require('./xbee');
                     //   })}`
                     // );
                     sensor(authUser.uid, process.env.CAMERA_ID)
-                    .update({ data: s3.getSignedUrl("getObject", {
+                    .update({ 
+                      readingDate: fieldValue.serverTimestamp(),
+                      data: s3.getSignedUrl("getObject", {
                       Bucket: BUCKET,
                       Key: imageRemoteName
-                    }) });
-                    
-
+                        }) 
+                      });
                   })
                   .catch(err => {
                     console.log("failed:", err);
