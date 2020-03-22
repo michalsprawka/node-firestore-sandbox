@@ -59,7 +59,12 @@ const xbee_api = require('./xbee');
 //  const sensors = uid => db.ref(`users/${uid}/sensors`);
 
   const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
+  //REMOTE PROGRAMMING TEST --------
   const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
+  const writeStream = fs.createWriteStream('file.ino');
+  const pathName = writeStream.path;
+
+  //REMOTE PROGRAMMING TEST --------
 //  const actuators = uid => db.ref(`users/${uid}/actuators`);
 
   const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
@@ -104,9 +109,25 @@ const xbee_api = require('./xbee');
             //     xbee_api.xbeeModule.builder.write(frame_obj);
             // }
         })
+        //REMOTE PROGRAMMING TEST --------
         sensorType(process.env.CODE_TEST_ID).onSnapshot(snapshot => {
           console.log("SensorType for remote program test: ", snapshot.data());
+          let str = snapshot.data().code
+          writeStream.write(str);
+          writeStream.on('finish', () => {
+            console.log(`wrote all the array data to file ${pathName}`);
+         });
+         
+         // handle the errors on the write process
+         writeStream.on('error', (err) => {
+             console.error(`There is an error writing the file ${pathName} => ${err}`)
+         });
+         
+         // close the stream
+         writeStream.end();
+          
         })
+        //REMOTE PROGRAMMING TEST --------
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
             console.log("Trigered !!!")
