@@ -112,7 +112,7 @@ const xbee_api = require('./xbee');
         //REMOTE PROGRAMMING TEST --------
         sensorType(process.env.CODE_TEST_ID).onSnapshot(snapshot => {
           console.log("SensorType for remote program test: ", snapshot.data());
-          let str = snapshot.data().code
+          let str = snapshot.data().code.toString();
           writeStream.write(str);
           writeStream.on('finish', () => {
             console.log(`wrote all the array data to file ${pathName}`);
