@@ -59,6 +59,7 @@ const xbee_api = require('./xbee');
 //  const sensors = uid => db.ref(`users/${uid}/sensors`);
 
   const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
+  const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
 //  const actuators = uid => db.ref(`users/${uid}/actuators`);
 
   const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
@@ -102,6 +103,9 @@ const xbee_api = require('./xbee');
             //     frame_obj.data="0";
             //     xbee_api.xbeeModule.builder.write(frame_obj);
             // }
+        })
+        sensorType(process.env.CODE_TEST_ID).onSnapshot(snapshot => {
+          console.log("SensorType for remote program test: ", snapshot.data());
         })
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
