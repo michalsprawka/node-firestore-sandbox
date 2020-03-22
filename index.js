@@ -63,6 +63,7 @@ const xbee_api = require('./xbee');
   const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
   const writeStream = fs.createWriteStream('file.ino');
   const pathName = writeStream.path;
+  let array=[]
 
   //REMOTE PROGRAMMING TEST --------
 //  const actuators = uid => db.ref(`users/${uid}/actuators`);
@@ -113,7 +114,9 @@ const xbee_api = require('./xbee');
         sensorType(process.env.CODE_TEST_ID).onSnapshot(snapshot => {
           console.log("SensorType for remote program test: ", snapshot.data());
           let str = snapshot.data().code.toString();
-          writeStream.write(str);
+          array = str.split("\n");
+          array.forEach(value => writeStream.write(`${value}\n`));
+          //writeStream.write(str);
           writeStream.on('finish', () => {
             console.log(`wrote all the array data to file ${pathName}`);
          });
