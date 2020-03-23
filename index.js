@@ -99,16 +99,16 @@ const xbee_api = require('./xbee');
 
         actuator(authUser.uid, process.env.NODE_APP_LAMP1ID).onSnapshot(snapshot => {
             console.log("SNAPSHOT: ",snapshot.data())
-            // if (snapshot.data().state === 1){
+           //  if (snapshot.data().state === 1){
             //     console.log("SENDING 1");
             //     frame_obj.data="1";
             //     xbee_api.xbeeModule.builder.write(frame_obj);
-            // }
-            // if (snapshot.data().state === 0){
-            //     console.log("SENDING 0");
-            //     frame_obj.data="0";
-            //     xbee_api.xbeeModule.builder.write(frame_obj);
-            // }
+           //  }
+           //  if (snapshot.data().state === 0){
+           //      console.log("SENDING 0");
+           //      frame_obj.data="0";
+           //      xbee_api.xbeeModule.builder.write(frame_obj);
+           //  }
         })
         //REMOTE PROGRAMMING TEST --------
         sensor(authUser.uid, process.env.CODE_TEST_ID).onSnapshot(snapshot => {
