@@ -60,7 +60,7 @@ const xbee_api = require('./xbee');
 
   const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
   //REMOTE PROGRAMMING TEST --------
-  const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
+  //const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
   const writeStream = fs.createWriteStream('file.ino');
   const pathName = writeStream.path;
   let array=[]
@@ -111,7 +111,7 @@ const xbee_api = require('./xbee');
             // }
         })
         //REMOTE PROGRAMMING TEST --------
-        sensorType(process.env.CODE_TEST_ID).onSnapshot(snapshot => {
+        sensor(authUser.uid, process.env.CODE_TEST_ID).onSnapshot(snapshot => {
           console.log("SensorType for remote program test: ", snapshot.data());
           let str = snapshot.data().code.toString();
           array = str.split("END");
