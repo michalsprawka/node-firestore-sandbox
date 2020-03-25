@@ -111,27 +111,29 @@ const xbee_api = require('./xbee');
            //  }
         })
         //REMOTE PROGRAMMING TEST --------
-        sensor(authUser.uid, process.env.CODE_TEST_ID).onSnapshot(snapshot => {
-          console.log("SensorType for remote program test: ", snapshot.data());
-          let str = snapshot.data().code.toString();
-          array = str.split("END");
-          console.log("in array: ",array);
-          array.forEach(value => writeStream.write(`${value}\n`));
-          //writeStream.write(str);
-          writeStream.on('finish', () => {
-            console.log(`wrote all the array data to file ${pathName}`);
-         });
+        // sensor(authUser.uid, process.env.CODE_TEST_ID).onSnapshot(snapshot => {
+        //   console.log("SensorType for remote program test: ", snapshot.data());
+        //   let str = snapshot.data().code.toString();
+        //   array = str.split("END");
+        //   console.log("in array: ",array);
+        //   array.forEach(value => writeStream.write(`${value}\n`));
+        //   //writeStream.write(str);
+        //   writeStream.on('finish', () => {
+        //     console.log(`wrote all the array data to file ${pathName}`);
+        //  });
          
-         // handle the errors on the write process
-         writeStream.on('error', (err) => {
-             console.error(`There is an error writing the file ${pathName} => ${err}`)
-         });
+        //  // handle the errors on the write process
+        //  writeStream.on('error', (err) => {
+        //      console.error(`There is an error writing the file ${pathName} => ${err}`)
+        //  });
          
-         // close the stream
-         writeStream.end();
+        //  // close the stream
+        //  writeStream.end();
           
-        })
+        // })
         //REMOTE PROGRAMMING TEST --------
+
+
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
             console.log("Trigered !!!")
