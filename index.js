@@ -84,6 +84,8 @@ const xbee_api = require('./xbee');
   ON_DEATH(function(signal, err) {
     //clean up code here
     console.log("Good bye");
+    user(authUser.uid)
+    .update({ rpiReady: false });
     process.exit();
   })
 
@@ -91,6 +93,11 @@ const xbee_api = require('./xbee');
     user(userUid)
     .update({ rpiReady: true });
   }
+
+  // function uncheckRpi(userUid) {
+  //   user(userUid)
+  //   .update({ rpiReady: false });
+  // }
 
   //END OF CONFIGURATION **********************************************************************
 
