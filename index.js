@@ -14,7 +14,6 @@ const SECRET_KEY = process.env.ASA_KEY;
 var firebase = require('firebase');
 const xbee_api = require('./xbee');
 
-//require('dotenv').config()
 
   const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -48,27 +47,22 @@ const xbee_api = require('./xbee');
   var auth = app.auth()
   var db = app.firestore();
   var fieldValue = firebase.firestore.FieldValue;
-//  const messages = () => db.ref('messages');
-//  const comments = (uid) => db.ref(`messages/${uid}/comments`);
-//  const sensorData = (uid, commentID) => db.ref(`messages/${uid}/comments/${commentID}`)
 
-//   const user = uid => db.ref(`users/${uid}`);
-
-//  const users = () => db.ref("users");
-
-//  const sensors = uid => db.ref(`users/${uid}/sensors`);
 
   const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
+  const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
+
+
   //REMOTE PROGRAMMING TEST --------
-  //const sensorType = (uid) => db.doc(`sensorTypes/${uid}`);
+
   const writeStream = fs.createWriteStream('file.ino');
   const pathName = writeStream.path;
   let array=[]
 
   //REMOTE PROGRAMMING TEST --------
-//  const actuators = uid => db.ref(`users/${uid}/actuators`);
 
-  const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
+
+ 
   let counter = 0;
   let alarmCounter = 0;
   const frame_obj = {
@@ -85,18 +79,20 @@ const xbee_api = require('./xbee');
   xbee_api.serPort.pipe(xbee_api.xbeeModule.parser);
   xbee_api.xbeeModule.builder.pipe(xbee_api.serPort);
 
+  //END OF CONFIGURATION **********************************************************************
+
+
+
+  
+
   auth.signInWithEmailAndPassword(process.env.NODE_APP_EMAIL,
     process.env.NODE_APP_PASSWORD)
   .catch(function(error){ console.log(error)})
   auth.onAuthStateChanged(authUser =>{
       if(authUser){
           console.log("Authuser: ",authUser.uid)
-        //  sensor(authUser.uid, process.env.NODE_APP_SENSORID)
-        //  .update({data: 101});
-        //   messages().on('value', snapshot => {
-        //     console.log("SNAPSHOT", snapshot.val())
-        // })
-
+       
+        // SWITCHING OF LAMP ********************************************************************
         actuator(authUser.uid, process.env.NODE_APP_LAMP1ID).onSnapshot(snapshot => {
             console.log("SNAPSHOT: ",snapshot.data())
            //  if (snapshot.data().state === 1){
@@ -110,7 +106,10 @@ const xbee_api = require('./xbee');
            //      xbee_api.xbeeModule.builder.write(frame_obj);
            //  }
         })
-        //REMOTE PROGRAMMING TEST --------
+
+
+        //REMOTE PROGRAMMING TEST ***********************************************************
+
         // sensor(authUser.uid, process.env.CODE_TEST_ID).onSnapshot(snapshot => {
         //   console.log("SensorType for remote program test: ", snapshot.data());
         //   let str = snapshot.data().code.toString();
@@ -131,9 +130,10 @@ const xbee_api = require('./xbee');
         //  writeStream.end();
           
         // })
-        //REMOTE PROGRAMMING TEST --------
 
+        // ENDREMOTE PROGRAMMING TEST  ****************************************************
 
+        // MAKING PHOTO **********************************************************************
         sensor(authUser.uid, process.env.CAMERA_ID).onSnapshot(snapshot => {
           if (snapshot.data().cameraTrigger){
             console.log("Trigered !!!")
@@ -178,52 +178,44 @@ const xbee_api = require('./xbee');
           }
         })
 
+        //END OF MAKING PHOTO ************************************************************************
+
+        // READING TEMPARATURE AND PRESSURE OR ALARM FROM XBEE NETWORK *************************
+
         xbee_api.xbeeModule.parser.on("data", function(frame) {
             console.log(">>", frame)
             console.log(">>", frame.remote64)
                 if(frame.data){
-                if(frame.remote64==='0013a2004106afaf'){
-		var press = frame.data.readFloatLE(1);
-		var temp = frame.data.readFloatLE(5);
-                    console.log(temp);
-		console.log(press);
-                  //  console.log(frame.data.readFloatLE(5));
-                  //  console.log("COUNTER: ", counter);
-                      sensor(authUser.uid, process.env.NODE_APP_TERMOMETERID)
-                     .update({data: temp,
-                            readingDate: fieldValue.serverTimestamp()
-                            });
-			sensor(authUser.uid, process.env.NODE_APP_BAROMETERID)
-			.update({
-				data: press,
-				readingDate: fieldValue.serverTimestamp()
-			});
-			
-                    // comments("-LwnsU_BjlGG5_1tQ_VT").push({
-                    //     body: "Sensor Data",
-                    //     sensorData1: frame.data.readFloatLE(1),
-                    //     sensorData2: frame.data.readFloatLE(5)
-                    // })
-                  //  sensorData("-LwnsU_BjlGG5_1tQ_VT","-LxMEPI-clzctUzlNTX3").update({
-                  //      body: "Sensor Data",
-                   //     sensorData1: frame.data.readFloatLE(1),
-                    //    sensorData2: frame.data.readFloatLE(5),
-                    //    cnt: counter
-                  //  })
-                    counter++;
-                               
-                }
-                else if (frame.remote64==='0013a2004106afba'){
-                    // console.log("ALARM:  ",frame.data.toString());
-                    console.log("TEMPERATURE", frame.data.readFloatLE());
-                    console.log("Alarm CNT: ", alarmCounter)
-                    alarmCounter++;
-                }
-                };
-        });
+                  if(frame.remote64==='0013a2004106afaf'){
+                      var press = frame.data.readFloatLE(1);
+                      var temp = frame.data.readFloatLE(5);
+                      console.log(temp);
+                          console.log(press);
+                    //  console.log(frame.data.readFloatLE(5));
+                    //  console.log("COUNTER: ", counter);
+                        sensor(authUser.uid, process.env.NODE_APP_TERMOMETERID)
+                          .update({data: temp,
+                              readingDate: fieldValue.serverTimestamp()
+                              });
+                        sensor(authUser.uid, process.env.NODE_APP_BAROMETERID)
+                          .update({
+                              data: press,
+                              readingDate: fieldValue.serverTimestamp()
+                              });
+                        counter++;
+                                
+                    }
+                  else if (frame.remote64==='0013a2004106afba'){
+                      // console.log("ALARM:  ",frame.data.toString());
+                      //console.log("TEMPERATURE", frame.data.readFloatLE());
+                      console.log("Alarm CNT: ", alarmCounter)
+                      alarmCounter++;
+                    }
+                }; //end of if(frame data)
+          }); //end of xbee_api.xbeeModule.parser listener
 
         
-      }
-  })
+      } //End of if(authUser)
+  }) //End of onAuthStateChanged listener
 
   
