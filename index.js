@@ -83,6 +83,7 @@ const xbee_api = require('./xbee');
   ON_DEATH(function(signal, err) {
     //clean up code here
     console.log("Good bye");
+    process.exit();
   })
 
   //END OF CONFIGURATION **********************************************************************
