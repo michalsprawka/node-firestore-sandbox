@@ -110,8 +110,8 @@ const xbee_api = require('./xbee');
             //clean up code here
             console.log("Good bye");
             user(authUser.uid)
-            .update({ rpiReady: false });
-            process.exit();
+            .update({ rpiReady: false }).then(process.exit());
+            
           })
 
           checkRpi(authUser.uid);
