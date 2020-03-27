@@ -1,6 +1,7 @@
 
 
 require('dotenv').config()
+var ON_DEATH = require('death');
 // Photo module --------------
 const PiCamera = require("pi-camera");
 var AWS = require("aws-sdk");
@@ -79,11 +80,16 @@ const xbee_api = require('./xbee');
   xbee_api.serPort.pipe(xbee_api.xbeeModule.parser);
   xbee_api.xbeeModule.builder.pipe(xbee_api.serPort);
 
+  ON_DEATH(function(signal, err) {
+    //clean up code here
+    console.log("Good bye");
+  })
+
   //END OF CONFIGURATION **********************************************************************
 
 
 
-  
+
 
   auth.signInWithEmailAndPassword(process.env.NODE_APP_EMAIL,
     process.env.NODE_APP_PASSWORD)
