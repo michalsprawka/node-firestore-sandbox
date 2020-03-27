@@ -52,6 +52,7 @@ const xbee_api = require('./xbee');
 
   const sensor = (uid, sensorID) => db.doc(`users/${uid}/sensors/${sensorID}`);
   const actuator = (uid, sensorID) => db.doc(`users/${uid}/actuators/${sensorID}`);
+  const user = (uid ) => db.doc(`users/${uid}`)
 
 
   //REMOTE PROGRAMMING TEST --------
@@ -86,6 +87,11 @@ const xbee_api = require('./xbee');
     process.exit();
   })
 
+  function checkRpi(userUid) {
+    user(userUid)
+    .update({ rpiReady: true });
+  }
+
   //END OF CONFIGURATION **********************************************************************
 
 
@@ -98,6 +104,8 @@ const xbee_api = require('./xbee');
   auth.onAuthStateChanged(authUser =>{
       if(authUser){
           console.log("Authuser: ",authUser.uid)
+
+          checkRpi(authUser.uid);
        
         // SWITCHING OF LAMP ********************************************************************
         actuator(authUser.uid, process.env.NODE_APP_LAMP1ID).onSnapshot(snapshot => {
