@@ -81,13 +81,7 @@ const xbee_api = require('./xbee');
   xbee_api.serPort.pipe(xbee_api.xbeeModule.parser);
   xbee_api.xbeeModule.builder.pipe(xbee_api.serPort);
 
-  ON_DEATH(function(signal, err) {
-    //clean up code here
-    console.log("Good bye");
-    user(authUser.uid)
-    .update({ rpiReady: false });
-    process.exit();
-  })
+ 
 
   function checkRpi(userUid) {
     user(userUid)
@@ -111,6 +105,14 @@ const xbee_api = require('./xbee');
   auth.onAuthStateChanged(authUser =>{
       if(authUser){
           console.log("Authuser: ",authUser.uid)
+
+          ON_DEATH(function(signal, err) {
+            //clean up code here
+            console.log("Good bye");
+            user(authUser.uid)
+            .update({ rpiReady: false });
+            process.exit();
+          })
 
           checkRpi(authUser.uid);
        
